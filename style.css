@@ -73,3 +73,26 @@
 .skill-profile{background:radial-gradient(ellipse 320px 270px at var(--pointer-x,50%) var(--pointer-y,20%),#d6f8740b,transparent 80%),#151b16;transition:border-color .3s,box-shadow .3s}.skill-profile:hover{border-color:#829750;box-shadow:0 24px 80px #0002,0 0 28px #d6f87408}.profile-mark{transition:background .3s,box-shadow .3s}.skill-profile:hover .profile-mark{background:#d6f87412;box-shadow:0 0 20px #d6f87410}.radar-axis-label,.radar-axis-number{transition:fill .2s,opacity .2s}.radar-svg.has-active-axis .radar-axis-label:not(.is-active-axis),.radar-svg.has-active-axis .radar-axis-number:not(.is-active-axis){opacity:.45}.radar-svg .is-active-axis{fill:#f4ffd9;opacity:1}.radar-beam{stroke:var(--lime);stroke-width:1.5;stroke-dasharray:5 5;opacity:.7}.radar-halo{fill:none;stroke:var(--lime);stroke-width:1.2;opacity:.65}.radar-spotlight{pointer-events:none}.radar-skill{transition:background .2s,border-color .2s,color .2s,transform .2s}.radar-skill:hover{transform:translateY(-2px)}.radar-skill:active{transform:translateY(0)}.radar-shape{filter:drop-shadow(0 0 5px #d6f87430)}.project-card{transition:border-color .3s,transform .3s,box-shadow .3s}.project-card:hover{transform:translateY(-5px);box-shadow:0 16px 35px #0002}.project-visual .design-preview,.project-visual .reply-window{transition:transform .5s}.project-card:hover .design-preview{transform:rotate(0deg) translateY(-3px)}.project-card:hover .reply-window{transform:rotate(0deg) translateY(-3px)}
 @media(prefers-reduced-motion:reduce){.project-card:hover,.radar-skill:hover,.project-card:hover .design-preview,.project-card:hover .reply-window{transform:none}.skill-profile{background:#151b16}}
 @media(hover:none){.project-card:hover,.radar-skill:hover{transform:none}}
+.experience-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  grid-column: 1 / -1;
+}
+
+.company-logo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.company-logo img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
