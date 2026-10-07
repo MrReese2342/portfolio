@@ -1,4 +1,4 @@
-# Portfolio — Abderrahmane El Hathout
+# Portfolio Abderrahmane El Hathout
 
 Portfolio personnel en français, réalisé en HTML, CSS et JavaScript. Pas de framework, de compilation ou de dépendance à installer pour utiliser le site.
 
