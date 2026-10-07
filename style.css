@@ -96,3 +96,67 @@
   height: 32px;
   object-fit: contain;
 }
+/* MathQuest : aperçu des exercices, stack et livraison. */
+.mathquest-board {
+  height: 216px;
+  display: grid;
+  grid-template-columns: 1.12fr 1fr;
+  grid-template-rows: minmax(0, 1fr) 30px;
+  gap: 10px 14px;
+  margin-top: 14px;
+}
+.mathquest-quiz {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #b7a888;
+  border-radius: 10px;
+  background: #f7f1df;
+  box-shadow: 4px 5px 0 #453c2a10;
+  transition: transform .3s;
+}
+.mathquest-quiz-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+}
+.mathquest-quiz-head .mono { font-size: 8px; color: #786b50; font-weight: 400; }
+.mathquest-progress { height: 3px; margin: 8px 0; background: #e1d7bd; border-radius: 4px; overflow: hidden; }
+.mathquest-progress > span { display: block; width: 60%; height: 100%; background: #7a864a; }
+.mathquest-quiz-label { display: block; font-size: 10px; color: #786b50; line-height: 1.2; }
+.mathquest-question { margin: 6px 0 8px; font-size: 36px; line-height: 1.1; letter-spacing: -1.5px; font-weight: 600; white-space: nowrap; }
+.mathquest-question > span { font-size: .65em; font-weight: 400; color: #938261; }
+.mathquest-answers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.mathquest-answers > span { display: flex; align-items: center; justify-content: center; gap: 4px; height: 28px; border: 1px solid #c7bda5; border-radius: 5px; font-size: 12px; }
+.mathquest-answers > .is-answer { background: #d8e4ae; border-color: #8d9e60; color: #354323; }
+.mathquest-answers i { font-style: normal; font-size: 10px; }
+.mathquest-feedback { display: block; margin-top: 6px; font-size: 9px; line-height: 1.2; color: #5a6b37; }
+.mathquest-stack { display: grid; grid-template-rows: 1fr 1fr 22px; gap: 6px; min-width: 0; }
+.mathquest-layer { display: flex; flex-direction: column; justify-content: center; padding: 7px 12px; border: 1px solid #b5a785; border-radius: 7px; }
+.mathquest-layer > .mono { font-size: 8px; line-height: 1.2; color: #786b50; }
+.mathquest-layer > strong { margin: 3px 0; font-size: 21px; font-weight: 550; line-height: 1.1; letter-spacing: -.5px; }
+.mathquest-layer > small { font-size: 9px; line-height: 1.2; color: #786b50; }
+.mathquest-front { background: #ede5ce; }
+.mathquest-back { background: #d2c5a0; }
+.mathquest-environments { display: flex; align-items: center; justify-content: center; gap: 12px; font: 9px Consolas, monospace; letter-spacing: 1px; }
+.mathquest-environments > span { border: 1px solid #b5a785; padding: 2px 8px; border-radius: 3px; }
+.mathquest-environments > i { font-style: normal; color: #786b50; }
+.mathquest-delivery { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 10px; border-top: 1px solid #b5a785; font-size: 10px; color: #6d5f42; }
+.mathquest-delivery > .mono { font-size: 8px; }
+.mathquest:hover .mathquest-quiz { transform: translateY(-2px); }
+@media (max-width: 760px) {
+  .mathquest-board { gap: 10px; }
+  .mathquest-quiz { padding: 12px 10px; }
+  .mathquest-question { font-size: 30px; }
+  .mathquest-layer { padding: 7px 9px; }
+  .mathquest-layer > strong { font-size: 17px; }
+  .mathquest-layer > small { font-size: 8px; }
+  .mathquest-delivery { padding: 0 4px; font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mathquest-quiz { transition: none; }
+  .mathquest:hover .mathquest-quiz { transform: none; }
+}

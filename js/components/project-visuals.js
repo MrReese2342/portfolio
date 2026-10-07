@@ -21,6 +21,28 @@ export const projectVisuals = {
 <div class="project-visual data-visual"><div class="visual-heading"><span>BIGDDMINING / SCIENTIFIC DATA</span><span class="mini-symbol" aria-hidden="true">{ }</span></div><div class="data-diagram" aria-label="Transformation de corpus scientifiques en relations entre termes"><span class="data-node n1">Corpus</span><span class="data-node n2">Termes</span><span class="data-node n3">Règles</span><span class="data-node n4">Relations</span><svg viewBox="0 0 500 200" preserveAspectRatio="none" aria-hidden="true"><path d="M60 100C130 100 130 45 235 45M60 100C140 100 140 155 240 155M235 45C340 45 340 100 435 100M240 155C340 155 340 100 435 100"/></svg><span class="data-tiny t1 mono">XML / JSON</span><span class="data-tiny t2 mono">NEO4J</span></div><span class="visual-caption">DE LA DONNÉE BRUTE AUX RELATIONS</span></div>
   `,
   mathquest: `
-<div class="project-visual math-visual"><div class="visual-heading"><span>MATHQUEST / LEARNING PLATFORM</span><span class="mini-symbol" aria-hidden="true">π</span></div><div class="deployment-diagram" aria-label="Pipeline de déploiement de MathQuest"><div class="branch"><span class="mono">git push</span><b>Une plateforme.<br>Deux environnements.</b></div><div class="deploy-targets"><div><span class="mono">dev</span><strong>TEST</strong><small>Vérifier & itérer</small></div><div><span class="mono">main</span><strong>PROD</strong><small>Déployer & servir</small></div></div></div><span class="visual-caption">REACT · SPRING BOOT · CI/CD</span></div>
+    <div class="project-visual math-visual" aria-label="Illustration de MathQuest : exercices en React, API Spring Boot et déploiement avec GitLab CI/CD, Docker et Nginx">
+      <div class="visual-heading">
+        <span>MATHQUEST / LEARNING PLATFORM</span>
+        <span class="mini-symbol" aria-hidden="true">π</span>
+      </div>
+      <div class="mathquest-board" aria-hidden="true">
+        <div class="mathquest-quiz">
+          <div class="mathquest-quiz-head"><span>MathQuest</span><span class="mono">03 / 05</span></div>
+          <div class="mathquest-progress"><span></span></div>
+          <span class="mathquest-quiz-label">À toi de jouer.</span>
+          <div class="mathquest-question">7 × 8 <span>= ?</span></div>
+          <div class="mathquest-answers"><span>48</span><span class="is-answer">56 <i>✓</i></span><span>64</span></div>
+          <span class="mathquest-feedback">Bien joué ! On continue ?</span>
+        </div>
+        <div class="mathquest-stack">
+          <div class="mathquest-layer mathquest-front"><span class="mono">01 / FRONTEND</span><strong>React</strong><small>Interface & exercices</small></div>
+          <div class="mathquest-layer mathquest-back"><span class="mono">02 / BACKEND</span><strong>Spring Boot</strong><small>API REST & logique métier</small></div>
+          <div class="mathquest-environments"><span>TEST</span><i>→</i><span>PROD</span></div>
+        </div>
+        <div class="mathquest-delivery"><span class="mono">03 / DEVOPS</span><span>GitLab CI/CD · Docker · Nginx</span></div>
+      </div>
+      <span class="visual-caption">REACT · SPRING BOOT · DEVOPS</span>
+    </div>
   `
 };
