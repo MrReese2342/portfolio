@@ -60,6 +60,6 @@ export const projects = [
       "GitLab CI/CD",
       "Nginx"
     ],
-    "contribution": "Forte implication dans le développement du backend avec Spring Boot et du frontend avec React, ainsi que dans l’intégration entre les deux. Responsable de la partie DevOps : conteneurisation, configuration Nginx et pipelines GitLab CI/CD vers les environnements de test et de production. Résolution de problèmes de CORS, d’authentification et de routage."
+    "contribution": "Implication importante dans le développement du backend avec Spring Boot et du frontend avec React, ainsi que dans l’intégration entre les deux. Responsable de la partie DevOps : conteneurisation, configuration Nginx et pipelines GitLab CI/CD vers les environnements de test et de production. Résolution de problèmes de CORS, d’authentification et de routage, gestion des VM linux, optimisations de l'espace disque et nettoyage"
   }
 ];
