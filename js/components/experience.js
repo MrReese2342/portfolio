@@ -7,7 +7,7 @@ export function renderExperience(experience) {
     <div class="experience-aside">
       <div class="experience-brand">
         <span class="company-logo"><img src="${escape(experience.logo)}" alt="" width="32" height="32" loading="lazy"></span>
-        <span class="experience-company">${escape(experience.company)}<span>.</span></span>
+        <span class="experience-company">${escape(experience.company)}</span>
       </div>
       <p>${escape(experience.role)}<br>${escape(experience.location)}</p>
       <span class="mono">${experience.tools.map(row => row.map(escape).join(' / ')).join('<br>')}</span>
