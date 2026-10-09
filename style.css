@@ -1062,17 +1062,17 @@ details[open] summary>span {
   min-width: 250px;
 }
 
-.contact-asterisk {
-  font-size: 100px;
-  line-height: 1;
-  color: var(--lime);
+.contact-mail-icon {
   display: block;
+  width: 42px;
+  height: 42px;
   margin-bottom: 25px;
-  transition: transform .6s;
-}
-
-.contact-aside:hover .contact-asterisk {
-  transform: rotate(90deg);
+  color: var(--lime);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .contact-aside p {
@@ -2201,9 +2201,11 @@ h1.hero-name {
     margin-top: 32px;
   }
 
-  .contact-asterisk {
-    font-size: 65px;
+  .contact-mail-icon {
+    width: 34px;
+    height: 34px;
     margin: 0;
+    flex-shrink: 0;
   }
 
   .contact-aside p {
