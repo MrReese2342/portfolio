@@ -160,3 +160,37 @@
   .mathquest-quiz { transition: none; }
   .mathquest:hover .mathquest-quiz { transform: none; }
 }
+
+/* Présentation personnelle : le nom passe au premier plan. */
+.hero-copy { min-width: 0; }
+.hero-greeting {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1.3;
+}
+h1.hero-name {
+  margin: 0 0 22px;
+  font-size: clamp(44px, 5.1vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -3px;
+}
+.hero-name > span { display: block; }
+.hero-personal {
+  max-width: 480px;
+  margin: 0 0 18px;
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 25px;
+  font-style: italic;
+  line-height: 1.4;
+}
+@media (max-width: 760px) {
+  .hero-greeting { font-size: 20px; }
+  h1.hero-name {
+    font-size: clamp(40px, 8.8vw, 64px);
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  .hero-personal { font-size: 23px; }
+}
