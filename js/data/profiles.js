@@ -8,8 +8,8 @@ export const profiles = {
         { label: 'Dev fullstack', value: .90, detail: 'Backend et interface reliés dans GESCO, Penpot AI Assistant et MathQuest.' },
         { label: 'Dev front', value: .67, detail: 'Interfaces Angular et Angular Material ; expérience avec React et TypeScript.' },
         { label: 'Data', value: .65, detail: 'Traitement de données avec Python, SQL, Pandas et exploration de graphes Neo4j.' },
-        { label: 'IA', value: .68, detail: 'Spring AI, RAG, Tool Calling et intégration de modèles locaux avec Ollama.' },
-        { label: 'DevOps', value: .76, detail: 'Docker, GitLab CI/CD, Linux et Nginx, notamment sur MathQuest.' },
+        { label: 'IA', value: .59, detail: 'Spring AI, RAG, Tool Calling et intégration de modèles locaux avec Ollama.' },
+        { label: 'DevOps', value: .65, detail: 'Docker, GitLab CI/CD, Linux et Nginx, notamment sur MathQuest.' },
       ],
     },
     stack: {
