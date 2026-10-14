@@ -1,5 +1,7 @@
+
 import { projectVisuals } from './project-visuals.js';
 import { escapeHtml as escape } from '../utils/html.js';
+import { renderTech } from '../utils/tech-icons.js';
 
 function renderLink(link) {
   return link ? `<a href="${escape(link.url)}" target="_blank" rel="noopener noreferrer">${escape(link.label)}</a>` : '';
@@ -26,7 +28,7 @@ function renderCard(project, index) {
       <h3>${escape(project.title)}</h3>
       <p>${escape(project.description)}</p>
       <ul class="tags" aria-label="${escape(project.tagsLabel || 'Technologies')}">
-        ${project.tags.map(tag => `<li>${escape(tag)}</li>`).join('')}
+        ${project.tags.map(tag => `<li>${renderTech(tag)}</li>`).join('')}
       </ul>
       <details>
         <summary>${escape(project.detailsLabel || 'Ma contribution')} <span aria-hidden="true">+</span></summary>

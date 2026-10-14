@@ -1,4 +1,6 @@
+
 import { escapeHtml as escape } from '../utils/html.js';
+import { renderTech } from '../utils/tech-icons.js';
 
 export function renderSkills(categories, education) {
   const grid = document.getElementById('skills-grid');
@@ -6,8 +8,13 @@ export function renderSkills(categories, education) {
     <div class="skill-row">
       <span class="skill-number mono">${String(index + 1).padStart(2, '0')} /</span>
       <h3>${escape(category.title)}</h3>
-      <p>${category.lines.map(line => line.map(escape).join(' · ')).join('<br>')}</p>
+      <div class="skill-tech-list">
+        ${category.lines.map(line => `
+          <div class="skill-tech-line">${line.map(renderTech).join('')}</div>
+        `).join('')}
+      </div>
     </div>`).join('');
+
   const formation = document.getElementById('education');
   if (formation) formation.innerHTML = `
     <span class="mono">FORMATION</span>
