@@ -1,4 +1,6 @@
+
 import { escapeHtml as escape } from '../utils/html.js';
+import { renderTech } from '../utils/tech-icons.js';
 
 export function renderExperience(experience) {
   const container = document.getElementById('experience-content');
@@ -10,7 +12,9 @@ export function renderExperience(experience) {
         <span class="experience-company">${escape(experience.company)}</span>
       </div>
       <p>${escape(experience.role)}<br>${escape(experience.location)}</p>
-      <span class="mono">${experience.tools.map(row => row.map(escape).join(' / ')).join('<br>')}</span>
+      <div class="experience-tools mono">
+        ${experience.tools.map(row => `<div class="experience-tool-line">${row.map(renderTech).join('')}</div>`).join('')}
+      </div>
     </div>
     <div class="experience-main">
       <h3>${experience.heading.map(escape).join('<br>')}</h3>

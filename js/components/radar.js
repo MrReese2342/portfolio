@@ -1,4 +1,6 @@
+
 import { animateNode, animateRadar } from '../animations.js';
+import { renderTech } from '../utils/tech-icons.js';
 
 const ns = 'http://www.w3.org/2000/svg';
 function element(tag, attrs = {}, text) {
@@ -88,7 +90,10 @@ function renderRadar(key, profile) {
     button.type = 'button';button.className = 'radar-skill' + (skill.value >= .85 ? ' radar-skill-strong' : '');
     button.setAttribute('aria-pressed', 'false');button.setAttribute('aria-controls', `insight-${key}`);
     const number = document.createElement('span');number.className = 'mono';number.textContent = String(index + 1).padStart(2, '0');
-    button.append(number, document.createTextNode(skill.label));button.addEventListener('click', () => activate(index));
+    button.append(number);
+    if (isStack) button.insertAdjacentHTML('beforeend', renderTech(skill.label));
+    else button.append(document.createTextNode(skill.label));
+    button.addEventListener('click', () => activate(index));
     controls.push(button);legend.append(button);
   });
   stage.replaceChildren(svg, legend);
