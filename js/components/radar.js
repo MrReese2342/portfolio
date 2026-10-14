@@ -3,6 +3,24 @@ import { animateNode, animateRadar } from '../animations.js';
 import { renderTech } from '../utils/tech-icons.js';
 
 const ns = 'http://www.w3.org/2000/svg';
+
+// Pictogrammes SVG pour les six domaines du profil général.
+// Ils utilisent la couleur du thème et ne dépendent d'aucun service externe.
+const domainIcons = {
+  'dev back': '<rect x="3" y="3" width="18" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/><path d="M7 7h.01M7 17h.01"/>',
+  'dev fullstack': '<path d="m12 2-9 5 9 5 9-5-9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>',
+  'dev front': '<rect x="3" y="3" width="18" height="15" rx="2"/><path d="M8 22h8M12 18v4M9 8l-2 2 2 2M15 8l2 2-2 2"/>',
+  'data': '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 4 18 4 18 0V5M3 12c0 4 18 4 18 0"/>',
+  'ia': '<path d="M12 18V5a3 3 0 0 0-6 0 4 4 0 0 0-2 6 4 4 0 0 0 2 7 3 3 0 0 0 6 0ZM12 18V5a3 3 0 0 1 6 0 4 4 0 0 1 2 6 4 4 0 0 1-2 7 3 3 0 0 1-6 0Z"/><path d="M8 9h2M14 9h2M8 14h2M14 14h2"/>',
+  'devops': '<circle cx="6" cy="4" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="20" r="2"/><path d="M6 6v12M18 8v4a4 4 0 0 1-4 4H6"/>'
+};
+
+function renderDomainIcon(label) {
+  const paths = domainIcons[label.trim().toLowerCase()];
+  if (!paths) return '';
+  return `<svg class="radar-domain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${paths}</svg>`;
+}
+
 function element(tag, attrs = {}, text) {
   const node = document.createElementNS(ns, tag);
   Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
@@ -56,7 +74,7 @@ function renderRadar(key, profile) {
   const halo = element('circle', {cx, cy, r: 13, class: 'radar-halo'});
   spotlight.append(beam, halo);svg.append(spotlight);
   const legend = document.createElement('div');
-  legend.className = `radar-legend ${isStack ? 'radar-legend-stack' : ''}`;
+  legend.className = `radar-legend ${isStack ? 'radar-legend-stack' : 'radar-legend-domains'}`;
   legend.setAttribute('role', 'group');legend.setAttribute('aria-label', `Explorer les axes : ${profile.title}`);
   const insight = document.getElementById(`insight-${key}`), controls = [];
   const insightNodes = [insight.querySelector('.insight-label'), insight.querySelector('p'), insight.querySelector('span:last-child')];
@@ -92,7 +110,10 @@ function renderRadar(key, profile) {
     const number = document.createElement('span');number.className = 'mono';number.textContent = String(index + 1).padStart(2, '0');
     button.append(number);
     if (isStack) button.insertAdjacentHTML('beforeend', renderTech(skill.label));
-    else button.append(document.createTextNode(skill.label));
+    else {
+      button.insertAdjacentHTML('beforeend', renderDomainIcon(skill.label));
+      button.append(document.createTextNode(skill.label));
+    }
     button.addEventListener('click', () => activate(index));
     controls.push(button);legend.append(button);
   });

@@ -1,5 +1,5 @@
 
-/* Icônes des technologies : alignement cohérent dans les quatre sections. */
+/* Icônes des technologies et des domaines : alignement cohérent. */
 .tech-item{display:inline-flex;align-items:center;gap:7px;vertical-align:middle;white-space:nowrap;max-width:100%;}
 .tech-name{display:inline-block;}
 .tech-icon{display:block;width:19px;height:19px;flex:0 0 19px;object-fit:contain;}
@@ -16,3 +16,9 @@
 .experience-tool-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 15px;}
 .experience-tool-line .tech-icon{width:17px;height:17px;flex-basis:17px;}
 @media(max-width:760px){.skill-tech-list{grid-column:2;font-size:14px;}.skill-tech-line{gap:9px 14px;}.skill-row .tech-icon{width:17px;height:17px;flex-basis:17px;}.experience-aside>.experience-tools{margin-top:8px;}.radar-skill .tech-icon{width:15px;height:15px;flex-basis:15px;}}
+
+/* Profil général : six pictogrammes SVG, indépendants du CDN de logos. */
+.radar-legend-domains .radar-skill{gap:7px;}
+.radar-domain-icon{display:block;width:17px;height:17px;flex:0 0 17px;color:var(--lime);}
+.radar-legend-domains .radar-skill:not(.is-selected):not(.radar-skill-strong) .radar-domain-icon{color:#91c9a3;}
+@media(max-width:760px){.radar-domain-icon{width:16px;height:16px;flex-basis:16px;}}
