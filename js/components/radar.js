@@ -1,3 +1,4 @@
+
 import { animateNode, animateRadar } from '../animations.js';
 import { renderTech } from '../utils/tech-icons.js';
 
@@ -27,47 +28,25 @@ function getDomainIconMarkup(label) {
 
 function getDomainLabelLines(label) {
   if (label.startsWith('Dev ')) {
-    const parts = label.split(' ');
-    return [parts[0], parts.slice(1).join(' ')];
+    const [first, ...rest] = label.split(' ');
+    return [first, rest.join(' ')];
   }
   return [label];
 }
 
-function estimateLineWidth(text) {
-  return Math.max(28, Math.round(text.length * 9.2));
-}
-
+// Crée un groupe unique icône + texte, dont la largeur réelle sera
+// mesurée après insertion dans le DOM SVG (évite les approximations).
 function createDomainAxisLabel(skill, x, y, anchor) {
-  const group = element('g', {
-    class: 'radar-axis-group',
-    transform: `translate(${x} ${y})`
-  });
-
+  const group = element('g', {class: 'radar-axis-group'});
   const lines = getDomainLabelLines(skill.label);
-  const iconSize = 16;
-  const gap = 8;
-  const maxTextWidth = Math.max(...lines.map(estimateLineWidth));
-  const totalWidth = iconSize + gap + maxTextWidth;
-
-  let iconX = 0;
-  let textX = iconSize + gap;
-  let textAnchor = 'start';
-
-  if (anchor === 'end') {
-    iconX = -(maxTextWidth + gap + iconSize);
-    textX = 0;
-    textAnchor = 'end';
-  } else if (anchor === 'middle') {
-    iconX = -totalWidth / 2;
-    textX = iconX + iconSize + gap;
-    textAnchor = 'start';
-  }
+  const iconSize = 20;
+  const gap = 9;
 
   const icon = element('svg', {
     class: 'radar-axis-icon',
     viewBox: '0 0 24 24',
-    x: iconX,
-    y: lines.length === 2 ? -9 : -8,
+    x: 0,
+    y: -iconSize / 2,
     width: iconSize,
     height: iconSize,
     fill: 'none',
@@ -81,20 +60,33 @@ function createDomainAxisLabel(skill, x, y, anchor) {
   icon.innerHTML = getDomainIconMarkup(skill.label);
   group.append(icon);
 
-  const lineYs = lines.length === 2 ? [-10, 10] : [0];
-  lines.forEach((line, index) => {
+  const textNodes = lines.map((line, index) => {
+    const yText = lines.length === 2 ? (index === 0 ? -12 : 14) : 1;
     const text = element('text', {
-      x: textX,
-      y: lineYs[index],
-      'text-anchor': textAnchor,
+      x: iconSize + gap,
+      y: yText,
+      'text-anchor': 'start',
       'dominant-baseline': 'middle',
       class: 'radar-axis-label radar-axis-text'
     }, line);
     group.append(text);
+    return text;
   });
 
   if (skill.value >= .85) group.classList.add('radar-axis-strong');
-  return group;
+
+  const position = () => {
+    // Mesure la police réellement rendue, quelle que soit la taille d'écran.
+    const textWidth = Math.max(...textNodes.map(node => {
+      const measured = node.getComputedTextLength();
+      return measured > 0 ? measured : node.textContent.length * 14;
+    }));
+    const width = iconSize + gap + textWidth;
+    const offset = anchor === 'middle' ? -width / 2 : anchor === 'end' ? -width : 0;
+    group.setAttribute('transform', `translate(${x + offset} ${y})`);
+  };
+
+  return {group, textNodes, position};
 }
 
 function renderRadar(key, profile) {
@@ -114,7 +106,7 @@ function renderRadar(key, profile) {
   svg.append(grid);
   const data = element('g', {class: 'radar-data', 'aria-hidden': 'true'});
   data.append(element('polygon', {points: skills.map((s, i) => point(i, Math.max(0, Math.min(1, s.value))).join(',')).join(' '), class: 'radar-shape'}));
-  const dots = [], labels = [];
+  const dots = [], labels = [], domainLabels = [];
   skills.forEach((skill, index) => {
     const [dx, dy] = point(index, Math.max(0, Math.min(1, skill.value)));
     const dot = element('circle', {cx: dx, cy: dy, r: isStack ? 3.3 : 4, class: 'radar-dot'});
@@ -130,9 +122,10 @@ function renderRadar(key, profile) {
       svg.append(number);
       labels.push([label, number]);
     } else {
-      const labelGroup = createDomainAxisLabel(skill, lx, ly, anchor);
-      svg.append(labelGroup);
-      labels.push([labelGroup]);
+      const label = createDomainAxisLabel(skill, lx, ly, anchor);
+      svg.append(label.group);
+      labels.push([label.group, ...label.textNodes]);
+      domainLabels.push(label);
     }
   });
   svg.append(data);
@@ -186,6 +179,11 @@ function renderRadar(key, profile) {
     controls.push(button);legend.append(button);
   });
   stage.replaceChildren(svg, legend);
+  // Le graphe doit être dans le DOM pour que SVG mesure les vrais textes.
+  domainLabels.forEach(label => label.position());
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => domainLabels.forEach(label => label.position()));
+  }
 }
 
 export function initRadars(profiles) {
