@@ -1,4 +1,3 @@
-
 import { animateNode, animateRadar } from '../animations.js';
 import { renderTech } from '../utils/tech-icons.js';
 
@@ -15,18 +14,89 @@ const domainIcons = {
   'devops': '<circle cx="6" cy="4" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="20" r="2"/><path d="M6 6v12M18 8v4a4 4 0 0 1-4 4H6"/>'
 };
 
-function renderDomainIcon(label) {
-  const paths = domainIcons[label.trim().toLowerCase()];
-  if (!paths) return '';
-  return `<svg class="radar-domain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${paths}</svg>`;
-}
-
 function element(tag, attrs = {}, text) {
   const node = document.createElementNS(ns, tag);
   Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
   if (text !== undefined) node.textContent = text;
   return node;
 }
+
+function getDomainIconMarkup(label) {
+  return domainIcons[label.trim().toLowerCase()] || '';
+}
+
+function getDomainLabelLines(label) {
+  if (label.startsWith('Dev ')) {
+    const parts = label.split(' ');
+    return [parts[0], parts.slice(1).join(' ')];
+  }
+  return [label];
+}
+
+function estimateLineWidth(text) {
+  return Math.max(28, Math.round(text.length * 9.2));
+}
+
+function createDomainAxisLabel(skill, x, y, anchor) {
+  const group = element('g', {
+    class: 'radar-axis-group',
+    transform: `translate(${x} ${y})`
+  });
+
+  const lines = getDomainLabelLines(skill.label);
+  const iconSize = 16;
+  const gap = 8;
+  const maxTextWidth = Math.max(...lines.map(estimateLineWidth));
+  const totalWidth = iconSize + gap + maxTextWidth;
+
+  let iconX = 0;
+  let textX = iconSize + gap;
+  let textAnchor = 'start';
+
+  if (anchor === 'end') {
+    iconX = -(maxTextWidth + gap + iconSize);
+    textX = 0;
+    textAnchor = 'end';
+  } else if (anchor === 'middle') {
+    iconX = -totalWidth / 2;
+    textX = iconX + iconSize + gap;
+    textAnchor = 'start';
+  }
+
+  const icon = element('svg', {
+    class: 'radar-axis-icon',
+    viewBox: '0 0 24 24',
+    x: iconX,
+    y: lines.length === 2 ? -9 : -8,
+    width: iconSize,
+    height: iconSize,
+    fill: 'none',
+    stroke: 'currentColor',
+    'stroke-width': '1.8',
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'aria-hidden': 'true',
+    focusable: 'false'
+  });
+  icon.innerHTML = getDomainIconMarkup(skill.label);
+  group.append(icon);
+
+  const lineYs = lines.length === 2 ? [-10, 10] : [0];
+  lines.forEach((line, index) => {
+    const text = element('text', {
+      x: textX,
+      y: lineYs[index],
+      'text-anchor': textAnchor,
+      'dominant-baseline': 'middle',
+      class: 'radar-axis-label radar-axis-text'
+    }, line);
+    group.append(text);
+  });
+
+  if (skill.value >= .85) group.classList.add('radar-axis-strong');
+  return group;
+}
+
 function renderRadar(key, profile) {
   const stage = document.getElementById(`radar-${key}`);
   if (!stage) return;
@@ -40,32 +110,30 @@ function renderRadar(key, profile) {
   svg.append(element('desc', {id: `chart-desc-${key}`}, profile.summary + ' Chaque axe représente une compétence. La surface est plus étendue vers les compétences les plus pratiquées. Les boutons sous le graphe donnent le contexte de chaque axe.'));
   const grid = element('g', {class: 'radar-grid', 'aria-hidden': 'true'});
   for (let level = 1; level <= 5; level++) grid.append(element('polygon', {points: coords(level / 5), class: level === 5 ? 'radar-grid-outer' : ''}));
-  skills.forEach((_, index) => {const [x, y] = point(index);grid.append(element('line', {x1: cx, y1: cy, x2: x, y2: y}));});
+  skills.forEach((_, index) => {const [px, py] = point(index);grid.append(element('line', {x1: cx, y1: cy, x2: px, y2: py}));});
   svg.append(grid);
   const data = element('g', {class: 'radar-data', 'aria-hidden': 'true'});
   data.append(element('polygon', {points: skills.map((s, i) => point(i, Math.max(0, Math.min(1, s.value))).join(',')).join(' '), class: 'radar-shape'}));
   const dots = [], labels = [];
   skills.forEach((skill, index) => {
-    const [x, y] = point(index, Math.max(0, Math.min(1, skill.value)));
-    const dot = element('circle', {cx: x, cy: y, r: isStack ? 3.3 : 4, class: 'radar-dot'});
+    const [dx, dy] = point(index, Math.max(0, Math.min(1, skill.value)));
+    const dot = element('circle', {cx: dx, cy: dy, r: isStack ? 3.3 : 4, class: 'radar-dot'});
     dots.push(dot);data.append(dot);
     const [lx, ly] = point(index, 1, labelRadius), cos = Math.cos(angle(index));
     const anchor = Math.abs(cos) < .15 ? 'middle' : cos > 0 ? 'start' : 'end';
-    const label = element('text', {x: lx, y: ly, 'text-anchor': anchor, 'dominant-baseline': 'middle', class: 'radar-axis-label'}, skill.label);
-    if (!isStack && skill.label.startsWith('Dev ')) {
-      label.textContent = '';
-      const parts = skill.label.split(' ');
-      label.append(element('tspan', {x: lx, dy: '-.55em'}, parts[0]));
-      label.append(element('tspan', {x: lx, dy: '1.15em'}, parts.slice(1).join(' ')));
-    }
-    if (skill.value >= .85) label.classList.add('radar-axis-strong');
-    svg.append(label);
-    const axisLabels = [label];
+
     if (isStack) {
+      const label = element('text', {x: lx, y: ly, 'text-anchor': anchor, 'dominant-baseline': 'middle', class: 'radar-axis-label'}, skill.label);
+      if (skill.value >= .85) label.classList.add('radar-axis-strong');
+      svg.append(label);
       const number = element('text', {x: lx, y: ly, 'text-anchor': anchor, 'dominant-baseline': 'middle', class: 'radar-axis-number'}, String(index + 1).padStart(2, '0'));
-      svg.append(number);axisLabels.push(number);
+      svg.append(number);
+      labels.push([label, number]);
+    } else {
+      const labelGroup = createDomainAxisLabel(skill, lx, ly, anchor);
+      svg.append(labelGroup);
+      labels.push([labelGroup]);
     }
-    labels.push(axisLabels);
   });
   svg.append(data);
   svg.append(element('circle', {cx, cy, r: 2, class: 'radar-origin', 'aria-hidden': 'true'}));
@@ -95,9 +163,9 @@ function renderRadar(key, profile) {
       insightNodes[0].textContent = 'COMPÉTENCE / ' + String(selectedIndex + 1).padStart(2, '0');
       insightNodes[1].textContent = skill.label;
       insightNodes[2].textContent = skill.detail;
-      const [x, y] = point(selectedIndex, Math.max(0, Math.min(1, skill.value)));
-      beam.setAttribute('x2', x);beam.setAttribute('y2', y);
-      halo.setAttribute('cx', x);halo.setAttribute('cy', y);
+      const [hx, hy] = point(selectedIndex, Math.max(0, Math.min(1, skill.value)));
+      beam.setAttribute('x2', hx);beam.setAttribute('y2', hy);
+      halo.setAttribute('cx', hx);halo.setAttribute('cy', hy);
       animateNode(spotlight, [{opacity: 0}, {opacity: 1}], 240);
       animateNode(halo, [{r: '8px', opacity: 1}, {r: '26px', opacity: 0}], 700);
     }
@@ -111,7 +179,7 @@ function renderRadar(key, profile) {
     button.append(number);
     if (isStack) button.insertAdjacentHTML('beforeend', renderTech(skill.label));
     else {
-      button.insertAdjacentHTML('beforeend', renderDomainIcon(skill.label));
+      button.insertAdjacentHTML('beforeend', `<svg class="radar-domain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${getDomainIconMarkup(skill.label)}</svg>`);
       button.append(document.createTextNode(skill.label));
     }
     button.addEventListener('click', () => activate(index));
