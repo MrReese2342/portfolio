@@ -4,9 +4,9 @@ export const profiles = {
       title: 'Profil général',
       summary: 'Profil principalement orienté backend et fullstack.',
       skills: [
-        { label: 'Développeur \nbackend', value: .94, detail: 'Développement d’API et de logique métier avec Java et Spring Boot.' },
-        { label: 'Développeur \nfullstack', value: .90, detail: 'Backend et interface reliés dans GESCO, Penpot AI Assistant et MathQuest.' },
-        { label: 'Développeur \nfrontend', value: .67, detail: 'Interfaces Angular et Angular Material ; expérience avec React et TypeScript.' },
+        { label: 'Dev backend', value: .94, detail: 'Développement d’API et de logique métier avec Java et Spring Boot.' },
+        { label: 'Dev fullstack', value: .90, detail: 'Backend et interface reliés dans GESCO, Penpot AI Assistant et MathQuest.' },
+        { label: 'Dev frontend', value: .67, detail: 'Interfaces Angular et Angular Material ; expérience avec React et TypeScript.' },
         { label: 'Data', value: .65, detail: 'Traitement de données avec Python, SQL, Pandas et exploration de graphes Neo4j.' },
         { label: 'IA', value: .59, detail: 'Spring AI, RAG, Tool Calling et intégration de modèles locaux avec Ollama.' },
         { label: 'DevOps', value: .65, detail: 'Docker, GitLab CI/CD, Linux et Nginx, notamment sur MathQuest.' },
