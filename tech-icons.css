@@ -31,15 +31,69 @@
 .radar-axis-group.is-active-axis .radar-axis-icon{filter:drop-shadow(0 0 6px rgba(127,252,158,.32));}
 @media(max-width:760px){.radar-domain-icon{width:16px;height:16px;flex-basis:16px;}}
 
-/* Hover du radar : trois pictogrammes doux, sans halo mobile sur la carte. */
+/* Le radar garde son apparence, sans superposer un deuxième effet au curseur. */
 .skill-profile,
 .skill-profile:hover{background:#151b16;}
 .skill-profile:hover{border-color:#345644;box-shadow:0 24px 80px #0002;}
-.radar-cursor-trail{opacity:0;pointer-events:none;transition:opacity .28s ease;}
-.radar-cursor-trail.is-visible{opacity:1;}
-.radar-cursor-icon{color:#9be8b3;opacity:.62;}
-.radar-cursor-icon:nth-child(2){opacity:.47;}
-.radar-cursor-icon:nth-child(3){opacity:.35;}
+
+/* Cinq pictogrammes légers suivent la souris sur tout le portfolio. */
+.site-cursor-trail{
+  position:fixed;
+  inset:0;
+  z-index:90;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:0;
+  color:#9be8b3;
+  transition:opacity .28s ease;
+}
+.site-cursor-trail.is-visible{opacity:1;}
+.site-cursor-icon{opacity:.58;}
+.site-cursor-icon:nth-child(2){opacity:.44;}
+.site-cursor-icon:nth-child(3){opacity:.35;}
+.site-cursor-icon:nth-child(4){opacity:.29;}
+.site-cursor-icon:nth-child(5){opacity:.24;}
+
+/* Header toujours visible, verre dépoli bord à bord malgré .wrap. */
+html{scroll-padding-top:96px;}
+.header{
+  position:sticky;
+  top:0;
+  z-index:80;
+  isolation:isolate;
+  transition:height .26s ease;
+}
+.header.is-scrolled{height:78px;}
+.header::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:100vw;
+  transform:translateX(-50%);
+  z-index:-1;
+  pointer-events:none;
+  background:rgba(17,23,19,.64);
+  border-bottom:1px solid rgba(138,201,158,.13);
+  -webkit-backdrop-filter:blur(18px) saturate(145%);
+  backdrop-filter:blur(18px) saturate(145%);
+  transition:background .26s ease,border-color .26s ease,box-shadow .26s ease;
+}
+.header.is-scrolled::before{
+  background:rgba(16,22,18,.86);
+  border-color:rgba(138,201,158,.23);
+  box-shadow:0 12px 34px rgba(0,0,0,.17);
+}
+@media (max-width:760px){
+  html{scroll-padding-top:80px;}
+  .header.is-scrolled{height:70px;}
+}
 @media (hover:none), (pointer:coarse), (prefers-reduced-motion:reduce){
-  .radar-cursor-trail{display:none;}
+  .site-cursor-trail{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .header,.header::before{transition:none;}
 }

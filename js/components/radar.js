@@ -89,24 +89,33 @@ function createDomainAxisLabel(skill, x, y, anchor) {
   return {group, textNodes, position};
 }
 
-// Trois pictogrammes du profil suivent discrètement la souris à l'intérieur
-// du graphe uniquement. Aucune animation sur écran tactile ou en mode réduit.
-function createRadarCursorTrail(svg, cx, cy, radius) {
+// Les cinq pictogrammes du profil accompagnent la souris sur tout le site.
+// Animation décorative : aucune interception des clics et aucune animation
+// sur écran tactile ou avec la préférence « réduire les animations ».
+export function initCursorTrail() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      document.querySelector('.site-cursor-trail')) return;
 
-  const trail = element('g', {
-    class: 'radar-cursor-trail',
+  // Le SVG est positionné sur le viewport. Ses coordonnées sont donc
+  // celles de clientX/clientY, même lorsque la page défile.
+  const trail = element('svg', {
+    class: 'site-cursor-trail',
     'aria-hidden': 'true',
-    'pointer-events': 'none'
+    'pointer-events': 'none',
+    focusable: 'false'
   });
+
   const specs = [
-    {name: 'dev backend', offsetX: -26, offsetY: -22, size: 18, ease: .18},
-    {name: 'dev frontend', offsetX: 31, offsetY: -8, size: 16, ease: .13},
-    {name: 'ia', offsetX: -9, offsetY: 32, size: 16, ease: .10}
+    {name: 'dev backend',  offsetX: -26, offsetY: -22, size: 18, ease: .18},
+    {name: 'dev frontend', offsetX:  31, offsetY:  -8, size: 16, ease: .13},
+    {name: 'ia',           offsetX:  -9, offsetY:  32, size: 16, ease: .10},
+    {name: 'data',         offsetX: -45, offsetY:  20, size: 15, ease: .12},
+    {name: 'devops',       offsetX:  39, offsetY:  32, size: 15, ease: .09}
   ];
+
   const icons = specs.map(spec => {
-    const node = element('g', {class: 'radar-cursor-icon'});
+    const node = element('g', {class: 'site-cursor-icon'});
     const symbol = element('svg', {
       x: -spec.size / 2,
       y: -spec.size / 2,
@@ -123,34 +132,36 @@ function createRadarCursorTrail(svg, cx, cy, radius) {
     symbol.innerHTML = getDomainIconMarkup(spec.name);
     node.append(symbol);
     trail.append(node);
-    return {...spec, node, x: cx, y: cy};
+    return {...spec, node, x: 0, y: 0};
   });
-  // Placé entre la grille et les données : jamais au-dessus des libellés.
-  svg.append(trail);
+  document.body.append(trail);
 
   let pointer = null;
   let frameId = 0;
-  const boundary = radius - 18;
-
-  function withinRadar(x, y) {
-    const dx = x - cx, dy = y - cy;
-    const distance = Math.hypot(dx, dy);
-    const ratio = distance > boundary ? boundary / distance : 1;
-    return {x: cx + dx * ratio, y: cy + dy * ratio};
-  }
+  const withinViewport = (x, y) => ({
+    x: Math.max(12, Math.min(window.innerWidth - 12, x)),
+    y: Math.max(12, Math.min(window.innerHeight - 12, y))
+  });
 
   function draw() {
     frameId = 0;
     if (!pointer) return;
     let moving = false;
+
     icons.forEach(icon => {
-      const goal = withinRadar(pointer.x + icon.offsetX, pointer.y + icon.offsetY);
-      const dx = goal.x - icon.x, dy = goal.y - icon.y;
+      const goal = withinViewport(
+        pointer.x + icon.offsetX,
+        pointer.y + icon.offsetY
+      );
+      const dx = goal.x - icon.x;
+      const dy = goal.y - icon.y;
       icon.x += dx * icon.ease;
       icon.y += dy * icon.ease;
-      icon.node.setAttribute('transform', `translate(${icon.x.toFixed(2)} ${icon.y.toFixed(2)})`);
+      icon.node.setAttribute('transform',
+        `translate(${icon.x.toFixed(2)} ${icon.y.toFixed(2)})`);
       if (Math.abs(dx) + Math.abs(dy) > .35) moving = true;
     });
+
     if (moving) frameId = requestAnimationFrame(draw);
   }
 
@@ -161,33 +172,34 @@ function createRadarCursorTrail(svg, cx, cy, radius) {
     frameId = 0;
   }
 
-  svg.addEventListener('pointermove', event => {
+  window.addEventListener('pointermove', event => {
     if (event.pointerType !== 'mouse') return;
-    const matrix = svg.getScreenCTM();
-    if (!matrix) return;
-    const cursor = svg.createSVGPoint();
-    cursor.x = event.clientX;
-    cursor.y = event.clientY;
-    const {x, y} = cursor.matrixTransform(matrix.inverse());
-    if (Math.hypot(x - cx, y - cy) > radius - 5) {
+    const x = event.clientX;
+    const y = event.clientY;
+    if (x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight) {
       hide();
       return;
     }
 
     if (!pointer) {
       icons.forEach(icon => {
-        const start = withinRadar(x + icon.offsetX, y + icon.offsetY);
+        const start = withinViewport(x + icon.offsetX, y + icon.offsetY);
         icon.x = start.x;
         icon.y = start.y;
-        icon.node.setAttribute('transform', `translate(${icon.x.toFixed(2)} ${icon.y.toFixed(2)})`);
+        icon.node.setAttribute('transform',
+          `translate(${icon.x.toFixed(2)} ${icon.y.toFixed(2)})`);
       });
     }
     pointer = {x, y};
     trail.classList.add('is-visible');
     if (!frameId) frameId = requestAnimationFrame(draw);
+  }, {passive: true});
+
+  document.documentElement.addEventListener('pointerleave', hide);
+  window.addEventListener('blur', hide);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) hide();
   });
-  svg.addEventListener('pointerleave', hide);
-  svg.addEventListener('pointercancel', hide);
 }
 
 function renderRadar(key, profile) {
@@ -205,7 +217,6 @@ function renderRadar(key, profile) {
   for (let level = 1; level <= 5; level++) grid.append(element('polygon', {points: coords(level / 5), class: level === 5 ? 'radar-grid-outer' : ''}));
   skills.forEach((_, index) => {const [px, py] = point(index);grid.append(element('line', {x1: cx, y1: cy, x2: px, y2: py}));});
   svg.append(grid);
-  createRadarCursorTrail(svg, cx, cy, radius);
   const data = element('g', {class: 'radar-data', 'aria-hidden': 'true'});
   data.append(element('polygon', {points: skills.map((s, i) => point(i, Math.max(0, Math.min(1, s.value))).join(',')).join(' '), class: 'radar-shape'}));
   const dots = [], labels = [], domainLabels = [];
