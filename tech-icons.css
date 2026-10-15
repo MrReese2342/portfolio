@@ -30,3 +30,16 @@
 .radar-svg.has-active-axis .radar-axis-group.is-active-axis .radar-axis-text{opacity:1;}
 .radar-axis-group.is-active-axis .radar-axis-icon{filter:drop-shadow(0 0 6px rgba(127,252,158,.32));}
 @media(max-width:760px){.radar-domain-icon{width:16px;height:16px;flex-basis:16px;}}
+
+/* Hover du radar : trois pictogrammes doux, sans halo mobile sur la carte. */
+.skill-profile,
+.skill-profile:hover{background:#151b16;}
+.skill-profile:hover{border-color:#345644;box-shadow:0 24px 80px #0002;}
+.radar-cursor-trail{opacity:0;pointer-events:none;transition:opacity .28s ease;}
+.radar-cursor-trail.is-visible{opacity:1;}
+.radar-cursor-icon{color:#9be8b3;opacity:.62;}
+.radar-cursor-icon:nth-child(2){opacity:.47;}
+.radar-cursor-icon:nth-child(3){opacity:.35;}
+@media (hover:none), (pointer:coarse), (prefers-reduced-motion:reduce){
+  .radar-cursor-trail{display:none;}
+}
